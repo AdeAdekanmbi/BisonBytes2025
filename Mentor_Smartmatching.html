@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!--
+	Spectral by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+  <head>
+    <title>MoneyMind Smart Dashboard</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript
+      ><link rel="stylesheet" href="assets/css/noscript.css"
+    /></noscript>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="is-preload">
+    <!-- Page Wrapper -->
+    <div id="page-wrapper">
+      <!-- Header -->
+      <header id="header">
+        <h1><a href="index.html">MoneyMind</a></h1>
+        <nav id="nav">
+          <ul>
+            <li class="special">
+              <a href="#menu" class="menuToggle"><span>Menu</span></a>
+              <div id="menu">
+                <ul>
+                  <li><a href="index.html">Home</a></li>
+                  <li><a href="marketplace.html">Marketplace</a></li>
+                  <li><a href="marketplace.html">Marketplace</a></li>
+                  <li><a href="#">Sign Up</a></li>
+                  <li><a href="#">Log In</a></li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <!-- Main -->
+      <article id="main">
+        <header>
+          <h2>Financial Dashboard</h2>
+          <p>Track your budget, set goals, and unlock smart insights.</p>
+        </header>
+
+        <section class="wrapper style5">
+          <div class="inner">
+            <!-- Top Nav Buttons -->
+            <ul class="actions fit">
+              <li>
+                <a href="Mentor_overview.html" class="button fit">Overview</a>
+              </li>
+              <li>
+                <a href="Mentor_Budget.html" class="button fit">Budget</a>
+              </li>
+              <li><a href="Mentor_Goals.html" class="button fit">Goals</a></li>
+              <li>
+                <a href="Mentor_Smartmatching.html" class="button primary fit"
+                  >Smart Matching</a
+                >
+              </li>
+            </ul>
+
+            <!-- AI Overview -->
+            <header>
+              <h3 class="major">AI Overview</h3>
+            </header>
+            <h4><strong>Current Budget</strong></h4>
+            <p>
+              You're currently on track with 70% of your budget remaining for
+              the month.
+            </p>
+
+            <!-- Budget Chart -->
+            <canvas
+              id="budgetChart"
+              width="300"
+              height="300"
+              style="max-width: 300px; margin: 0 auto 2em; display: block"
+            ></canvas>
+            <script>
+              const ctx = document
+                .getElementById("budgetChart")
+                .getContext("2d");
+              const budgetChart = new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                  labels: ["Spent", "Remaining"],
+                  datasets: [
+                    {
+                      data: [30, 70],
+                      backgroundColor: ["#f56942", "#28a745"],
+                    },
+                  ],
+                },
+                options: {
+                  cutout: "70%",
+                  plugins: {
+                    legend: {
+                      display: true,
+                      position: "bottom",
+                    },
+                  },
+                },
+              });
+            </script>
+
+            <h4><strong>Goals</strong></h4>
+            <p>
+              You're 40% of the way to saving $500 for summer travel. Keep
+              going!
+            </p>
+
+            <!-- Smart Insights -->
+            <header>
+              <h3 class="major">Smart Insights</h3>
+            </header>
+            <ul>
+              <li>
+                Your food spending is 10% higher than last week. Consider
+                budgeting less for dining out.
+              </li>
+              <li>
+                You might like <strong>Campus Threads</strong> for affordable
+                Howard gear under $30.
+              </li>
+            </ul>
+          </div>
+        </section>
+      </article>
+
+      <!-- Footer -->
+      <footer id="footer">
+        <ul class="icons">
+          <li>
+            <a href="#" class="icon brands fa-twitter"
+              ><span class="label">Twitter</span></a
+            >
+          </li>
+          <li>
+            <a href="#" class="icon brands fa-facebook-f"
+              ><span class="label">Facebook</span></a
+            >
+          </li>
+          <li>
+            <a href="#" class="icon brands fa-instagram"
+              ><span class="label">Instagram</span></a
+            >
+          </li>
+          <li>
+            <a href="#" class="icon brands fa-dribbble"
+              ><span class="label">Dribbble</span></a
+            >
+          </li>
+          <li>
+            <a href="#" class="icon solid fa-envelope"
+              ><span class="label">Email</span></a
+            >
+          </li>
+        </ul>
+        <ul class="copyright">
+          <li>&copy; MoneyMind</li>
+          <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        </ul>
+      </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrollex.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
