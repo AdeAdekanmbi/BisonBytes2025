@@ -21,26 +21,6 @@
     <!-- Page Wrapper -->
     <div id="page-wrapper">
       <!-- Header -->
-      <!-- <header id="header">
-        <h1><a href="index.html">MoneyMind</a></h1>
-        <nav id="nav">
-          <ul>
-            <li class="special">
-              <a href="#menu" class="menuToggle"><span>Menu</span></a>
-              <div id="menu">
-                <ul>
-                  <li><a href="index.html">Home</a></li>
-                  <li><a href="#three">About MoneyMind</a></li>
-                  <li><a href="Marketplace.html">MoneyMind Marketplace</a></li>
-                  <li><a href="Mentor_overview.html">MoneyMind Mentor</a></li>
-                  <li><a href="#one">Sign Up</a></li>
-                  <li><a href="#one">Log In</a></li>
-                </ul>
-              </div>
-            </li>
-          </ul>
-        </nav>
-      </header> -->
 	  <header id="header" class="top-nav">
 		<div class="container">
 		  <h1><a href="index.html">MoneyMind</a></h1>
@@ -53,6 +33,10 @@
 			  <li><a href="#" class="open-auth">Sign Up</a></li>
 			  <li><a href="#" class="open-auth">Log In</a></li>
 			</ul>
+			<ul id="nav-welcome" style="display: none;">
+				<li><span id="userGreeting" style="font-weight: bold; color: white;"></span></li>
+			  </ul>
+			  
 		  </nav>
 		</div>
 	  </header>
@@ -75,7 +59,7 @@
       <section id="one" class="wrapper alt style2">
         <section class="spotlight">
           <div class="image">
-            <img src="images/Howard_Background_bytes.jpg" alt="" />
+            <img src="images/marketplace_image.webp" alt="" />
           </div>
           <div class="content">
             <h2>
@@ -90,7 +74,7 @@
         </section>
         <section class="spotlight">
           <div class="image">
-            <img src="images/Howard_Background_bytes.jpg" alt="" />
+            <img src="images/mentor_img.png" alt="" />
           </div>
           <div class="content">
             <h2>
@@ -209,32 +193,11 @@
     <script src="assets/js/util.js"></script>
     <script src="assets/js/main.js"></script>
 
-	<!-- Modal Background -->
+  <!-- Modal Background -->
 <!-- <div id="authModal" class="modal">
 	<div class="modal-content">
 	  <span class="close">&times;</span>
-	  <h2>Sign Up / Log In</h2>
-	  
-	  <form id="authForm">
-		<label for="email">Email</label>
-		<input type="email" id="email" name="email" required />
-  
-		<label for="password">Password</label>
-		<input type="password" id="password" name="password" required />
-  
-		<button type="submit" class="button primary">Submit</button>
-	  </form>
-	</div>
-  </div> -->
-
-  <!-- <a href="#" class="open-auth">Sign Up</a>
-  <a href="#" class="open-auth">Log In</a> -->
-
-  <!-- Modal Background -->
-<div id="authModal" class="modal">
-	<div class="modal-content">
-	  <span class="close">&times;</span>
-	  <h2>Sign Up / Log In</h2>
+	  <h2>Sign Up Log In</h2>
   
 	  <form id="authForm">
 		<label for="email">Email</label>
@@ -258,10 +221,48 @@
 		<button type="submit" class="button primary">Submit</button>
 	  </form>
 	</div>
+  </div> -->
+  
+  <!-- Modal Background -->
+<div id="authModal" class="modal">
+	<div class="modal-content">
+	  <span class="close">&times;</span>
+  
+	  <!-- Tabs -->
+	  <div class="auth-tabs">
+		<button id="signupTab" class="auth-tab active">Sign Up</button>
+		<button id="loginTab" class="auth-tab">Log In</button>
+	  </div>
+  
+	  <!-- SIGN UP Form -->
+	  <form id="signupForm" class="auth-form">
+		<label for="signupName">Name</label>
+		<input type="text" id="signupName" placeholder="Your name" required />
+  
+		<label for="signupEmail">Email</label>
+		<input type="email" id="signupEmail" placeholder="Enter your email" required />
+  
+		<label for="signupPassword">Password</label>
+		<input type="password" id="signupPassword" placeholder="Create a password" required />
+  
+		<button type="submit" class="button primary">Sign Up</button>
+	  </form>
+  
+	  <!-- LOG IN Form -->
+	  <form id="loginForm" class="auth-form hidden">
+		<label for="loginEmail">Email</label>
+		<input type="email" id="loginEmail" placeholder="Enter your email" required />
+  
+		<label for="loginPassword">Password</label>
+		<input type="password" id="loginPassword" placeholder="Enter your password" required />
+  
+		<button type="submit" class="button primary">Log In</button>
+	  </form>
+	</div>
   </div>
   
 
-  <script>
+  <!-- <script>
   // Modal open buttons
   document.querySelectorAll('.open-auth').forEach(button => {
     button.addEventListener('click', event => {
@@ -281,8 +282,56 @@
       document.getElementById('authModal').style.display = 'none';
     }
   });
-</script>
+</script> -->
 
+<script>
+	const signupTab = document.getElementById('signupTab');
+	const loginTab = document.getElementById('loginTab');
+	const signupForm = document.getElementById('signupForm');
+	const loginForm = document.getElementById('loginForm');
+	const authModal = document.getElementById('authModal');
+	const closeModal = document.querySelector('.modal .close');
+  
+	// Handle tab switch
+	signupTab.onclick = () => {
+	  signupTab.classList.add('active');
+	  loginTab.classList.remove('active');
+	  signupForm.classList.remove('hidden');
+	  loginForm.classList.add('hidden');
+	};
+  
+	loginTab.onclick = () => {
+	  loginTab.classList.add('active');
+	  signupTab.classList.remove('active');
+	  loginForm.classList.remove('hidden');
+	  signupForm.classList.add('hidden');
+	};
+  
+	// Handle open modal
+	document.querySelectorAll('.open-auth').forEach(btn => {
+	  btn.addEventListener('click', e => {
+		e.preventDefault();
+		authModal.style.display = 'block';
+  
+		// Detect button text to choose correct form
+		const text = btn.textContent.toLowerCase();
+		if (text.includes('sign up')) {
+		  signupTab.click();
+		} else {
+		  loginTab.click();
+		}
+	  });
+	});
+
+	
+  
+	// Close modal
+	closeModal.onclick = () => (authModal.style.display = 'none');
+	window.onclick = e => {
+	  if (e.target === authModal) authModal.style.display = 'none';
+	};
+  </script>
+  
   
   </body>
 </html>

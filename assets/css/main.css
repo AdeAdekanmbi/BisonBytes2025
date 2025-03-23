@@ -4238,3 +4238,33 @@ html {
   opacity: 1;  /* ensure it's fully visible */
   font-weight: 400;
 }
+
+.auth-tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1.5em;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 0.75em;
+  cursor: pointer;
+  background: #eee;
+  border: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.auth-tab.active {
+  background: #d6432f;
+  color: white;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form.hidden {
+  display: none;
+}
