@@ -4116,3 +4116,125 @@ body.is-mobile.landing .wrapper.style4 {
 body.is-mobile.landing #footer {
   background-color: #1d242a;
 }
+
+.image.fit img {
+  width: 100%;
+  height: 250px;  /* Set your preferred height */
+  object-fit: cover;  /* This will crop while preserving the aspect ratio */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.top-nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: #111; /* or use rgba(0,0,0,0.9) for transparency */
+  color: white;
+  z-index: 1000;
+  padding: 1em 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; /* for mobile */
+  gap: 1em;
+  margin-top: 2em;
+}
+
+.cta-text {
+  margin: 0;
+  font-size: 1.2em;
+  flex: 1; /* allow it to take up space */
+}
+
+.button.primary {
+  white-space: nowrap; /* keep button text on one line */
+}
+
+.content {
+  /* background-color: rgba(20, 30, 40, 0.85); adjust opacity (0.0 to 1.0) */
+  opacity: 100;
+}
+
+/* Modal background */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(3px); /* optional blur effect */
+}
+
+.modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 2em;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.modal-content h2 {
+  text-align: center;
+  margin-bottom: 1.5em;
+  color: #333;
+}
+
+.modal-content label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  margin-top: 1em;
+  color: #000000;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 0.75em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1em;
+  background-color: #f7f7f7;
+  color: #000 !important;         /* sets the input text color */
+}  
+
+
+.modal-content input::placeholder {
+  color: #333 !important;         /* darker placeholder */
+  opacity: 1 !important;
+  font-weight: 400;
+}
+
+.modal-content .button.primary {
+  margin-top: 1.5em;
+  width: 100%;
+  font-weight: bold;
+}
+
+.close {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+
+::placeholder {
+  color: #000000; /* or try #333 for darker */
+  opacity: 1;  /* ensure it's fully visible */
+  font-weight: 400;
+}
