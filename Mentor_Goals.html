@@ -8,10 +8,27 @@
       content="width=device-width, initial-scale=1, user-scalable=no"
     />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <noscript
-      ><link rel="stylesheet" href="assets/css/noscript.css"
-    /></noscript>
+    <noscript>
+      <link rel="stylesheet" href="assets/css/noscript.css" />
+    </noscript>
     <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      #page-wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      article#main {
+        flex: 1;
+      }
+
       input[type="date"] {
         background: #f5f5f5;
         border: none;
@@ -23,6 +40,7 @@
         width: 100%;
         box-sizing: border-box;
       }
+
       .progress-container {
         background: #e0e0e0;
         border-radius: 25px;
@@ -30,6 +48,7 @@
         overflow: hidden;
         height: 25px;
       }
+
       .progress-bar {
         background-color: #28a745;
         height: 100%;
@@ -41,6 +60,7 @@
       }
     </style>
   </head>
+
   <body class="is-preload">
     <div id="page-wrapper">
       <!-- Header -->
@@ -90,106 +110,57 @@
               </li>
             </ul>
 
-            <!-- 👇 Keep your original header above this -->
-<!-- Goal Input Form -->
-<header><h3 class="major">Set Your Financial Goals</h3></header>
-<form id="goalForm">
-  <div class="row gtr-uniform">
-    <div class="col-12">
-      <input type="text" name="goalName" id="goalName" placeholder="Goal Name (e.g., Summer Travel)" />
-    </div>
-    <div class="col-12">
-      <input type="text" name="goalAmount" id="goalAmount" placeholder="Target Amount ($)" />
-    </div>
-    <div class="col-12">
-      <input type="text" name="savedSoFar" id="savedSoFar" placeholder="Saved So Far ($)" />
-    </div>
-    <div class="col-12">
-      <input type="date" name="targetDate" id="targetDate" />
-    </div>
-    <div class="col-12">
-      <textarea name="goalNotes" id="goalNotes" placeholder="Describe your motivation or strategy" rows="4"></textarea>
-    </div>
-    <div class="col-12">
-      <ul class="actions">
-        <li><input type="submit" value="Save Goal" class="primary" /></li>
-        <li><input type="reset" value="Reset" /></li>
-      </ul>
-    </div>
-  </div>
-</form>
+            <!-- Goal Input Form -->
+            <header><h3 class="major">Set Your Financial Goals</h3></header>
+            <form id="goalForm">
+              <div class="row gtr-uniform">
+                <div class="col-12">
+                  <input
+                    type="text"
+                    id="goalName"
+                    placeholder="Goal Name (e.g., Summer Travel)"
+                  />
+                </div>
+                <div class="col-12">
+                  <input
+                    type="text"
+                    id="goalAmount"
+                    placeholder="Target Amount ($)"
+                  />
+                </div>
+                <div class="col-12">
+                  <input
+                    type="text"
+                    id="savedSoFar"
+                    placeholder="Saved So Far ($)"
+                  />
+                </div>
+                <div class="col-12">
+                  <input type="date" id="targetDate" />
+                </div>
+                <div class="col-12">
+                  <textarea
+                    id="goalNotes"
+                    placeholder="Describe your motivation or strategy"
+                    rows="4"
+                  ></textarea>
+                </div>
+                <div class="col-12">
+                  <ul class="actions">
+                    <li>
+                      <input type="submit" value="Save Goal" class="primary" />
+                    </li>
+                    <li><input type="reset" value="Reset" /></li>
+                  </ul>
+                </div>
+              </div>
+            </form>
 
-<!-- 👇 Where goals get rendered -->
-<div id="goalList"></div>
-
-<!-- 👇 Scripts -->
-<script>
-  const goalForm = document.getElementById("goalForm");
-  const goalList = document.getElementById("goalList");
-
-  function getGoals() {
-    return JSON.parse(localStorage.getItem("goals") || "[]");
-  }
-
-  function saveGoals(goals) {
-    localStorage.setItem("goals", JSON.stringify(goals));
-  }
-
-  function renderGoals() {
-    const goals = getGoals();
-    goalList.innerHTML = "";
-    goals.forEach((goal, index) => {
-      const percent = goal.goalAmount > 0
-        ? Math.min((goal.savedSoFar / goal.goalAmount) * 100, 100)
-        : 0;
-
-      const div = document.createElement("div");
-      div.innerHTML = `
-        <hr />
-        <h4><strong>${goal.goalName}</strong></h4>
-        <p><strong>Target:</strong> $${goal.goalAmount} | <strong>Saved:</strong> $${goal.savedSoFar}</p>
-        <p><strong>Deadline:</strong> ${goal.targetDate}</p>
-        <p>${goal.goalNotes}</p>
-        <div class="progress-container">
-          <div class="progress-bar" style="width: ${percent}%;">${Math.round(percent)}%</div>
-        </div>
-        <button class="button small" data-index="${index}">Remove Goal</button>
-      `;
-      goalList.appendChild(div);
-    });
-
-    document.querySelectorAll("#goalList button").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const index = e.target.getAttribute("data-index");
-        const goals = getGoals();
-        goals.splice(index, 1);
-        saveGoals(goals);
-        renderGoals();
-      });
-    });
-  }
-
-  goalForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const newGoal = {
-      goalName: document.getElementById("goalName").value,
-      goalAmount: parseFloat(document.getElementById("goalAmount").value) || 0,
-      savedSoFar: parseFloat(document.getElementById("savedSoFar").value) || 0,
-      targetDate: document.getElementById("targetDate").value,
-      goalNotes: document.getElementById("goalNotes").value,
-    };
-
-    const goals = getGoals();
-    goals.push(newGoal);
-    saveGoals(goals);
-    renderGoals();
-    goalForm.reset();
-  });
-
-  window.addEventListener("load", renderGoals);
-</script>
-
+            <!-- Rendered Goals -->
+            <div id="goalList"></div>
+          </div>
+        </section>
+      </article>
 
       <!-- Footer -->
       <footer id="footer">
@@ -236,44 +207,79 @@
     <script src="assets/js/util.js"></script>
     <script src="assets/js/main.js"></script>
 
-    <!-- Goal Saving & Progress Script -->
+    <!-- Goal Handling Script -->
     <script>
-      const goalFields = [
-        "goalName",
-        "goalAmount",
-        "savedSoFar",
-        "targetDate",
-        "goalNotes",
-      ];
-      const inputMap = {};
+      const goalForm = document.getElementById("goalForm");
+      const goalList = document.getElementById("goalList");
 
-      goalFields.forEach((field) => {
-        inputMap[field] = document.getElementById(field);
-      });
-
-      function updateProgressBar() {
-        const saved = parseFloat(inputMap["savedSoFar"].value) || 0;
-        const target = parseFloat(inputMap["goalAmount"].value) || 0;
-        const percent = target > 0 ? Math.min((saved / target) * 100, 100) : 0;
-
-        const bar = document.getElementById("progressBar");
-        bar.style.width = percent + "%";
-        bar.textContent = Math.round(percent) + "%";
+      function getGoals() {
+        return JSON.parse(localStorage.getItem("goals") || "[]");
       }
 
-      window.addEventListener("load", () => {
-        goalFields.forEach((field) => {
-          const input = inputMap[field];
-          if (input) {
-            input.value = localStorage.getItem(`goal-${field}`) || "";
-            input.addEventListener("input", () => {
-              localStorage.setItem(`goal-${field}`, input.value);
-              updateProgressBar();
-            });
-          }
+      function saveGoals(goals) {
+        localStorage.setItem("goals", JSON.stringify(goals));
+      }
+
+      function renderGoals() {
+        const goals = getGoals();
+        goalList.innerHTML = "";
+        goals.forEach((goal, index) => {
+          const percent =
+            goal.goalAmount > 0
+              ? Math.min((goal.savedSoFar / goal.goalAmount) * 100, 100)
+              : 0;
+
+          const div = document.createElement("div");
+          div.innerHTML = `
+            <hr />
+            <h4><strong>${goal.goalName}</strong></h4>
+            <p><strong>Target:</strong> $${
+              goal.goalAmount
+            } | <strong>Saved:</strong> $${goal.savedSoFar}</p>
+            <p><strong>Deadline:</strong> ${goal.targetDate}</p>
+            <p>${goal.goalNotes}</p>
+            <div class="progress-container">
+              <div class="progress-bar" style="width: ${percent}%;">${Math.round(
+            percent
+          )}%</div>
+            </div>
+            <button class="button small" data-index="${index}">Remove Goal</button>
+          `;
+          goalList.appendChild(div);
         });
-        updateProgressBar();
+
+        document.querySelectorAll("#goalList button").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const index = e.target.getAttribute("data-index");
+            const goals = getGoals();
+            goals.splice(index, 1);
+            saveGoals(goals);
+            renderGoals();
+          });
+        });
+      }
+
+      goalForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const newGoal = {
+          goalName: document.getElementById("goalName").value,
+          goalAmount:
+            parseFloat(document.getElementById("goalAmount").value) || 0,
+          savedSoFar:
+            parseFloat(document.getElementById("savedSoFar").value) || 0,
+          targetDate: document.getElementById("targetDate").value,
+          goalNotes: document.getElementById("goalNotes").value,
+        };
+
+        const goals = getGoals();
+        goals.push(newGoal);
+        saveGoals(goals);
+        renderGoals();
+        goalForm.reset();
       });
+
+      window.addEventListener("load", renderGoals);
     </script>
   </body>
 </html>

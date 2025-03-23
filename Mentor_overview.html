@@ -46,7 +46,7 @@
   </head>
   <body class="is-preload">
     <div id="page-wrapper">
-      <!-- <header id="header">
+      <header id="header">
         <h1><a href="index.html">MoneyMind</a></h1>
         <nav id="nav">
           <ul>
@@ -63,20 +63,7 @@
             </li>
           </ul>
         </nav>
-      </header> -->
-
-      <header id="header" class="top-nav">
-        <div class="container">
-          <h1><a href="index.html">MoneyMind</a></h1>
-          <nav>
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="marketplace.html">Marketplace</a></li>
-          </ul>
-          </nav>
-        </div>
-        </header>
-
+      </header>
 
       <article id="main">
         <header>
@@ -227,6 +214,8 @@
         ),
       };
 
+      const pdfText = localStorage.getItem("bankPDFText") || "";
+
       const getStoredGoals = () => {
         try {
           return JSON.parse(localStorage.getItem("goals")) || [];
@@ -240,13 +229,12 @@
           budgetData.rent + budgetData.food + budgetData.transportation;
         const remaining = budgetData.income - spent;
 
-        const budgetText =
+        document.getElementById("budgetSummary").innerText =
           remaining >= 0
             ? `You're on track with $${remaining.toFixed(2)} remaining.`
             : `You've exceeded your budget by $${Math.abs(remaining).toFixed(
                 2
               )}.`;
-        document.getElementById("budgetSummary").innerText = budgetText;
 
         const ctx = document.getElementById("budgetChart").getContext("2d");
         new Chart(ctx, {
@@ -266,7 +254,13 @@
           },
         });
 
-        const goals = getStoredGoals();
+        const goals = getStoredGoals().map((g) => ({
+          name: g.goalName || "Unnamed Goal",
+          amount: Number(g.goalAmount || 0),
+          saved: Number(g.savedSoFar || 0),
+          date: g.targetDate || "N/A",
+        }));
+
         goalSummary.innerHTML = "";
         smartInsights.innerHTML = "";
 
@@ -293,9 +287,9 @@
             smartInsights.appendChild(li);
           });
 
-          const foodInsight = document.createElement("li");
-          foodInsight.textContent = `You're spending $${budgetData.food} on food. Consider adjusting it to save more.`;
-          smartInsights.appendChild(foodInsight);
+          const foodTip = document.createElement("li");
+          foodTip.textContent = `You're spending $${budgetData.food} on food. Consider adjusting it to save more.`;
+          smartInsights.appendChild(foodTip);
         }
       };
 
@@ -321,16 +315,24 @@
         chatHistory.appendChild(loading);
 
         try {
-          const goals = getStoredGoals();
-          const goalPrompt = goals
-            .map(
-              (g, i) =>
-                `Goal ${i + 1}: Save $${g.amount} for ${g.name} (saved $${
-                  g.saved
-                }, deadline: ${g.date})`
-            )
-            .join(" ");
-          const context = `Income: $${budgetData.income}, Rent: $${budgetData.rent}, Food: $${budgetData.food}, Transport: $${budgetData.transportation}. ${goalPrompt}`;
+          const goals = getStoredGoals().map((g, i) => {
+            const name = g.goalName || "Unnamed";
+            const amount = g.goalAmount || 0;
+            const saved = g.savedSoFar || 0;
+            const date = g.targetDate || "N/A";
+            return `Goal ${
+              i + 1
+            }: Save $${amount} for ${name} (saved $${saved}, deadline: ${date})`;
+          });
+
+          const context = `
+          Income: $${budgetData.income}, Rent: $${budgetData.rent}, Food: $${
+            budgetData.food
+          }, Transportation: $${budgetData.transportation}.
+          Goals: ${goals.join(" ")}
+          Bank Statement Insights: ${pdfText.slice(0, 1000)}... 
+        `;
+
           const result = await model.generateContent(`${context}\n\n${prompt}`);
           const response = await result.response;
           const text = response.text();
