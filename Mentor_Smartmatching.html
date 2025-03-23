@@ -6,7 +6,7 @@
 -->
 <html>
   <head>
-    <title>MoneyMind Smart Dashboard</title>
+    <title>MoneyMind Smart Matching</title>
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -16,7 +16,6 @@
     <noscript
       ><link rel="stylesheet" href="assets/css/noscript.css"
     /></noscript>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body class="is-preload">
     <!-- Page Wrapper -->
@@ -32,7 +31,6 @@
                 <ul>
                   <li><a href="index.html">Home</a></li>
                   <li><a href="marketplace.html">Marketplace</a></li>
-                  <li><a href="marketplace.html">Marketplace</a></li>
                   <li><a href="#">Sign Up</a></li>
                   <li><a href="#">Log In</a></li>
                 </ul>
@@ -45,8 +43,11 @@
       <!-- Main -->
       <article id="main">
         <header>
-          <h2>Financial Dashboard</h2>
-          <p>Track your budget, set goals, and unlock smart insights.</p>
+          <h2>Smart Matching</h2>
+          <p>
+            Personalized financial resources and campus opportunities just for
+            you.
+          </p>
         </header>
 
         <section class="wrapper style5">
@@ -67,70 +68,70 @@
               </li>
             </ul>
 
-            <!-- AI Overview -->
+            <!-- Smart Suggestions -->
             <header>
-              <h3 class="major">AI Overview</h3>
-            </header>
-            <h4><strong>Current Budget</strong></h4>
-            <p>
-              You're currently on track with 70% of your budget remaining for
-              the month.
-            </p>
-
-            <!-- Budget Chart -->
-            <canvas
-              id="budgetChart"
-              width="300"
-              height="300"
-              style="max-width: 300px; margin: 0 auto 2em; display: block"
-            ></canvas>
-            <script>
-              const ctx = document
-                .getElementById("budgetChart")
-                .getContext("2d");
-              const budgetChart = new Chart(ctx, {
-                type: "doughnut",
-                data: {
-                  labels: ["Spent", "Remaining"],
-                  datasets: [
-                    {
-                      data: [30, 70],
-                      backgroundColor: ["#f56942", "#28a745"],
-                    },
-                  ],
-                },
-                options: {
-                  cutout: "70%",
-                  plugins: {
-                    legend: {
-                      display: true,
-                      position: "bottom",
-                    },
-                  },
-                },
-              });
-            </script>
-
-            <h4><strong>Goals</strong></h4>
-            <p>
-              You're 40% of the way to saving $500 for summer travel. Keep
-              going!
-            </p>
-
-            <!-- Smart Insights -->
-            <header>
-              <h3 class="major">Smart Insights</h3>
+              <h3 class="major">Smart Financial Suggestions</h3>
             </header>
             <ul>
               <li>
-                Your food spending is 10% higher than last week. Consider
-                budgeting less for dining out.
+                <strong>Investing Tips:</strong> Based on your saved amount,
+                explore low-risk ETFs, fractional stocks on platforms like
+                Robinhood, or Roth IRAs.
               </li>
               <li>
-                You might like <strong>Campus Threads</strong> for affordable
-                Howard gear under $30.
+                <strong>Budget-Based Strategy:</strong> Consider a 50/30/20
+                rule: 50% needs, 30% wants, 20% savings/investments.
+              </li>
+              <li>
+                <strong>Credit Building Resources:</strong> Apply for a secured
+                credit card, use tools like Credit Karma, or explore student
+                credit builder loans.
+              </li>
+              <li>
+                <strong>Recommended Resources:</strong> NerdWallet,
+                Investopedia, and Your Money and Your Brain by Jason Zweig.
               </li>
             </ul>
+
+            <!-- Campus Matching -->
+            <header>
+              <h3 class="major">On-Campus Income Opportunities</h3>
+            </header>
+            <p>
+              Based on your financial goals and availability, here are some
+              student-run businesses or freelance gigs that could match your
+              skills or interests:
+            </p>
+            <ul>
+              <li>
+                <strong>Tutor with HU Tutors:</strong> Flexible academic support
+                gigs for math, science, and writing.
+              </li>
+              <li>
+                <strong>Work with Campus Threads:</strong> Assist in design,
+                delivery, or social media marketing for student-made apparel.
+              </li>
+              <li>
+                <strong>Join Bison Bites:</strong> Help cook, package, or
+                promote late-night snack offerings on campus.
+              </li>
+              <li>
+                <strong>Become a Barber or Stylist:</strong> If you have skills,
+                we can connect you with peers who need grooming services weekly.
+              </li>
+            </ul>
+
+            <!-- Action CTA -->
+            <footer>
+              <ul class="actions">
+                <li>
+                  <a href="marketplace.html" class="button primary"
+                    >View All Marketplace Gigs</a
+                  >
+                </li>
+                <li><a href="#" class="button">Request Custom Matches</a></li>
+              </ul>
+            </footer>
           </div>
         </section>
       </article>
