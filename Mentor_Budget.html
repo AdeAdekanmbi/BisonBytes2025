@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-	Spectral by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
   <head>
     <title>MoneyMind Smart Dashboard</title>
@@ -19,9 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body class="is-preload">
-    <!-- Page Wrapper -->
     <div id="page-wrapper">
-      <!-- Header -->
       <header id="header">
         <h1><a href="index.html">MoneyMind</a></h1>
         <nav id="nav">
@@ -41,7 +34,6 @@
         </nav>
       </header>
 
-      <!-- Main -->
       <article id="main">
         <header>
           <h2>Financial Dashboard</h2>
@@ -50,7 +42,6 @@
 
         <section class="wrapper style5">
           <div class="inner">
-            <!-- Top Nav Buttons -->
             <ul class="actions fit">
               <li>
                 <a href="Mentor_overview.html" class="button fit">Overview</a>
@@ -68,61 +59,20 @@
               </li>
             </ul>
 
-            <!-- AI Overview -->
             <h4><strong>Current Budget</strong></h4>
             <p>
-              You're currently on track with 70% of your budget remaining for
-              the month.
+              You're currently on track with your budget. Update your values to
+              see your status below.
             </p>
 
-            <!-- Budget Breakdown Chart -->
             <canvas
               id="budgetChart"
               width="300"
               height="300"
               style="max-width: 300px; margin: 0 auto 2em; display: block"
             ></canvas>
-            <script>
-              const ctx = document
-                .getElementById("budgetChart")
-                .getContext("2d");
-              const budgetChart = new Chart(ctx, {
-                type: "doughnut",
-                data: {
-                  labels: [
-                    "Rent/Housing",
-                    "Food/Groceries",
-                    "Transportation",
-                    "Remaining",
-                  ],
-                  datasets: [
-                    {
-                      data: [500, 250, 100, 150], // Example values (update via JS later)
-                      backgroundColor: [
-                        "#f56942",
-                        "#ffc107",
-                        "#17a2b8",
-                        "#28a745",
-                      ],
-                    },
-                  ],
-                },
-                options: {
-                  cutout: "70%",
-                  plugins: {
-                    legend: {
-                      display: true,
-                      position: "bottom",
-                    },
-                  },
-                },
-              });
-            </script>
 
-            <!-- Budget Input Form -->
-            <header>
-              <h3 class="major">Add Budget Details</h3>
-            </header>
+            <header><h3 class="major">Add Budget Details</h3></header>
             <form method="post" action="#">
               <div class="row gtr-uniform">
                 <div class="col-6 col-12-xsmall">
@@ -183,7 +133,6 @@
         </section>
       </article>
 
-      <!-- Footer -->
       <footer id="footer">
         <ul class="icons">
           <li>
@@ -219,7 +168,7 @@
       </footer>
     </div>
 
-    <!-- Scripts -->
+    <!-- Core Scripts -->
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/jquery.scrollex.min.js"></script>
     <script src="assets/js/jquery.scrolly.min.js"></script>
@@ -227,5 +176,81 @@
     <script src="assets/js/breakpoints.min.js"></script>
     <script src="assets/js/util.js"></script>
     <script src="assets/js/main.js"></script>
+
+    <!-- Budget Storage + Chart Logic -->
+    <script>
+      const budgetFields = [
+        "income",
+        "rent",
+        "food",
+        "transportation",
+        "notes",
+      ];
+      const inputMap = {};
+
+      budgetFields.forEach((field) => {
+        inputMap[field] = document.getElementById(field);
+      });
+
+      const ctx = document.getElementById("budgetChart").getContext("2d");
+      const budgetChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: [
+            "Rent/Housing",
+            "Food/Groceries",
+            "Transportation",
+            "Remaining",
+          ],
+          datasets: [
+            {
+              data: [0, 0, 0, 0],
+              backgroundColor: ["#f56942", "#ffc107", "#17a2b8", "#28a745"],
+            },
+          ],
+        },
+        options: {
+          cutout: "70%",
+          plugins: {
+            legend: {
+              display: true,
+              position: "bottom",
+            },
+          },
+        },
+      });
+
+      function updateChartFromInputs() {
+        const income = parseFloat(inputMap["income"].value) || 0;
+        const rent = parseFloat(inputMap["rent"].value) || 0;
+        const food = parseFloat(inputMap["food"].value) || 0;
+        const transportation =
+          parseFloat(inputMap["transportation"].value) || 0;
+        const totalSpent = rent + food + transportation;
+        const remaining = Math.max(income - totalSpent, 0);
+
+        budgetChart.data.datasets[0].data = [
+          rent,
+          food,
+          transportation,
+          remaining,
+        ];
+        budgetChart.update();
+      }
+
+      window.addEventListener("load", () => {
+        budgetFields.forEach((field) => {
+          const input = inputMap[field];
+          if (input) {
+            input.value = localStorage.getItem(`budget-${field}`) || "";
+            input.addEventListener("input", () => {
+              localStorage.setItem(`budget-${field}`, input.value);
+              updateChartFromInputs();
+            });
+          }
+        });
+        updateChartFromInputs();
+      });
+    </script>
   </body>
 </html>

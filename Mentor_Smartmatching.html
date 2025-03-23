@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-	Spectral by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
   <head>
     <title>MoneyMind Smart Matching</title>
@@ -13,12 +8,26 @@
       content="width=device-width, initial-scale=1, user-scalable=no"
     />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <noscript
-      ><link rel="stylesheet" href="assets/css/noscript.css"
-    /></noscript>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+      .chat-box {
+        background: #f4f4f4;
+        border-radius: 8px;
+        padding: 2em;
+        margin-top: 2em;
+        margin-bottom: 3em;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .chat-history {
+        background: #fff;
+        border-radius: 6px;
+        padding: 1.5em;
+        border: 1px solid #ddd;
+        line-height: 1.6;
+      }
+    </style>
   </head>
   <body class="is-preload">
-    <!-- Page Wrapper -->
     <div id="page-wrapper">
       <!-- Header -->
       <header id="header">
@@ -52,7 +61,6 @@
 
         <section class="wrapper style5">
           <div class="inner">
-            <!-- Top Nav Buttons -->
             <ul class="actions fit">
               <li>
                 <a href="Mentor_overview.html" class="button fit">Overview</a>
@@ -68,70 +76,64 @@
               </li>
             </ul>
 
-            <!-- Smart Suggestions -->
-            <header>
-              <h3 class="major">Smart Financial Suggestions</h3>
-            </header>
-            <ul>
-              <li>
-                <strong>Investing Tips:</strong> Based on your saved amount,
-                explore low-risk ETFs, fractional stocks on platforms like
-                Robinhood, or Roth IRAs.
-              </li>
-              <li>
-                <strong>Budget-Based Strategy:</strong> Consider a 50/30/20
-                rule: 50% needs, 30% wants, 20% savings/investments.
-              </li>
-              <li>
-                <strong>Credit Building Resources:</strong> Apply for a secured
-                credit card, use tools like Credit Karma, or explore student
-                credit builder loans.
-              </li>
-              <li>
-                <strong>Recommended Resources:</strong> NerdWallet,
-                Investopedia, and Your Money and Your Brain by Jason Zweig.
-              </li>
-            </ul>
+            <!-- AI Smart Match Response -->
+            <div class="chat-box">
+              <h3 style="text-align: center">Personalized Finance Coach</h3>
+              <h4 style="text-align: center; margin-bottom: 1em">
+                Powered by MoneyMind AI
+              </h4>
+              <div id="chatHistory" class="chat-history">
+                Loading insights...
+              </div>
+            </div>
 
-            <!-- Campus Matching -->
-            <header>
-              <h3 class="major">On-Campus Income Opportunities</h3>
-            </header>
-            <p>
-              Based on your financial goals and availability, here are some
-              student-run businesses or freelance gigs that could match your
-              skills or interests:
-            </p>
-            <ul>
-              <li>
-                <strong>Tutor with HU Tutors:</strong> Flexible academic support
-                gigs for math, science, and writing.
-              </li>
-              <li>
-                <strong>Work with Campus Threads:</strong> Assist in design,
-                delivery, or social media marketing for student-made apparel.
-              </li>
-              <li>
-                <strong>Join Bison Bites:</strong> Help cook, package, or
-                promote late-night snack offerings on campus.
-              </li>
-              <li>
-                <strong>Become a Barber or Stylist:</strong> If you have skills,
-                we can connect you with peers who need grooming services weekly.
-              </li>
-            </ul>
+            <!-- AI Integration -->
+            <script type="importmap">
+              {
+                "imports": {
+                  "@google/generative-ai": "https://esm.run/@google/generative-ai"
+                }
+              }
+            </script>
+            <script type="module">
+              import { GoogleGenerativeAI } from "@google/generative-ai";
 
-            <!-- Action CTA -->
-            <footer>
-              <ul class="actions">
-                <li>
-                  <a href="marketplace.html" class="button primary"
-                    >View All Marketplace Gigs</a
-                  >
-                </li>
-                <li><a href="#" class="button">Request Custom Matches</a></li>
-              </ul>
-            </footer>
+              const API_KEY = "AIzaSyDG0ypnnGPGQ3Skcd-iUgltPpTSopm1V4A";
+              const genAI = new GoogleGenerativeAI(API_KEY);
+              const chatHistory = document.getElementById("chatHistory");
+
+              function getUserSummary() {
+                const income = localStorage.getItem("budget-income") || "0";
+                const rent = localStorage.getItem("budget-rent") || "0";
+                const food = localStorage.getItem("budget-food") || "0";
+                const transport =
+                  localStorage.getItem("budget-transportation") || "0";
+                const goal = localStorage.getItem("goal-goalName") || "none";
+                const goalAmount =
+                  localStorage.getItem("goal-goalAmount") || "0";
+                const savedSoFar =
+                  localStorage.getItem("goal-savedSoFar") || "0";
+
+                return `
+My monthly income is $${income}. I spend $${rent} on rent, $${food} on food, and $${transport} on transportation.
+I'm currently saving $${savedSoFar} out of a goal of $${goalAmount} for ${goal}.
+Provide one smart money move I can take today and suggest a personalized on-campus opportunity that fits my budget and goals.
+                `;
+              }
+
+              async function generateInsight() {
+                const model = genAI.getGenerativeModel({
+                  model: "gemini-1.5-flash",
+                });
+                const prompt = getUserSummary();
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                const text = response.text();
+                chatHistory.innerHTML = marked.parse(text);
+              }
+
+              window.addEventListener("load", generateInsight);
+            </script>
           </div>
         </section>
       </article>

@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-  Spectral by HTML5 UP
-  html5up.net | @ajlkn
-  Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
   <head>
     <title>MoneyMind Smart Dashboard</title>
@@ -13,11 +8,11 @@
       content="width=device-width, initial-scale=1, user-scalable=no"
     />
     <link rel="stylesheet" href="assets/css/main.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <noscript
       ><link rel="stylesheet" href="assets/css/noscript.css"
     /></noscript>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
       .chat-box {
         background: #f4f4f4;
@@ -124,137 +119,23 @@
               </div>
             </div>
 
-            <script type="importmap">
-              {
-                "imports": {
-                  "@google/generative-ai": "https://esm.run/@google/generative-ai"
-                }
-              }
-            </script>
-            <script type="module">
-              import { GoogleGenerativeAI } from "@google/generative-ai";
-              const API_KEY = "AIzaSyDG0ypnnGPGQ3Skcd-iUgltPpTSopm1V4A";
-              const genAI = new GoogleGenerativeAI(API_KEY);
-              const chatHistory = document.getElementById("chatHistory");
-              const userInput = document.getElementById("userInput");
-              const generateBtn = document.getElementById("generateBtn");
-              let conversation = [];
-
-              async function generateText(prompt) {
-                const model = genAI.getGenerativeModel({
-                  model: "gemini-1.5-flash",
-                });
-                const loadingSpinner = document.createElement("div");
-                loadingSpinner.innerText = "Thinking...";
-                chatHistory.appendChild(loadingSpinner);
-
-                try {
-                  const result = await model.generateContent(prompt);
-                  const response = await result.response;
-                  const text = response.text();
-                  conversation.push({ role: "user", text: prompt });
-                  conversation.push({ role: "model", text: text });
-                  updateChatHistory();
-                } catch (error) {
-                  conversation.push({
-                    role: "model",
-                    text: "Error generating response.",
-                  });
-                  updateChatHistory();
-                } finally {
-                  chatHistory.removeChild(loadingSpinner);
-                }
-              }
-
-              function updateChatHistory() {
-                chatHistory.innerHTML = "";
-                conversation.forEach((msg) => {
-                  const div = document.createElement("div");
-                  div.classList.add("chat-message", msg.role);
-                  if (msg.role === "user") {
-                    div.innerText = `You: ${msg.text}`;
-                  } else {
-                    div.innerHTML =
-                      `<strong>MoneyMind:</strong><br>` +
-                      marked.parse(msg.text);
-                  }
-                  chatHistory.appendChild(div);
-                });
-              }
-
-              generateBtn.addEventListener("click", () => {
-                const prompt = userInput.value;
-                if (prompt) {
-                  generateText(prompt);
-                  userInput.value = "";
-                }
-              });
-
-              userInput.addEventListener("keypress", (e) => {
-                if (e.key === "Enter") {
-                  const prompt = userInput.value;
-                  if (prompt) {
-                    generateText(prompt);
-                    userInput.value = "";
-                  }
-                }
-              });
-            </script>
-
-            <h4 style="margin-top: 3em"><strong>Current Budget</strong></h4>
-            <p>
-              You're currently on track with 70% of your budget remaining for
-              the month.
-            </p>
-
+            <h4><strong>Current Budget</strong></h4>
+            <p id="budgetSummary">Loading your current budget...</p>
             <canvas
               id="budgetChart"
               width="300"
               height="300"
               style="max-width: 300px; margin: 0 auto 2em; display: block"
             ></canvas>
-            <script>
-              const ctx = document
-                .getElementById("budgetChart")
-                .getContext("2d");
-              const budgetChart = new Chart(ctx, {
-                type: "doughnut",
-                data: {
-                  labels: ["Spent", "Remaining"],
-                  datasets: [
-                    { data: [30, 70], backgroundColor: ["#f56942", "#28a745"] },
-                  ],
-                },
-                options: {
-                  cutout: "70%",
-                  plugins: {
-                    legend: {
-                      display: true,
-                      position: "bottom",
-                    },
-                  },
-                },
-              });
-            </script>
 
             <h4 style="margin-top: 3em"><strong>Goals</strong></h4>
-            <p>
-              You're 40% of the way to saving $500 for summer travel. Keep
-              going!
-            </p>
+            <div id="goalSummary">Loading your financial goals...</div>
 
             <header style="margin-top: 3em">
               <h3 class="major">Smart Insights</h3>
             </header>
-            <ul>
-              <li>
-                Your food spending is 10% higher than last week. Consider
-                budgeting less for dining out.
-              </li>
-              <li>
-                You might like <strong>Campus Threads</strong> for affordable
-                Howard gear under $30.
-              </li>
+            <ul id="smartInsights">
+              <li>Loading personalized insights...</li>
             </ul>
           </div>
         </section>
@@ -295,6 +176,7 @@
       </footer>
     </div>
 
+    <!-- Scripts -->
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/jquery.scrollex.min.js"></script>
     <script src="assets/js/jquery.scrolly.min.js"></script>
@@ -302,5 +184,174 @@
     <script src="assets/js/breakpoints.min.js"></script>
     <script src="assets/js/util.js"></script>
     <script src="assets/js/main.js"></script>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+      }
+    </script>
+    <script type="module">
+      import { GoogleGenerativeAI } from "@google/generative-ai";
+
+      const genAI = new GoogleGenerativeAI(
+        "AIzaSyDG0ypnnGPGQ3Skcd-iUgltPpTSopm1V4A"
+      );
+
+      const chatHistory = document.getElementById("chatHistory");
+      const userInput = document.getElementById("userInput");
+      const generateBtn = document.getElementById("generateBtn");
+      const goalSummary = document.getElementById("goalSummary");
+      const smartInsights = document.getElementById("smartInsights");
+
+      const budgetData = {
+        income: Number(localStorage.getItem("budget-income") || 0),
+        rent: Number(localStorage.getItem("budget-rent") || 0),
+        food: Number(localStorage.getItem("budget-food") || 0),
+        transportation: Number(
+          localStorage.getItem("budget-transportation") || 0
+        ),
+      };
+
+      const getStoredGoals = () => {
+        try {
+          return JSON.parse(localStorage.getItem("goals")) || [];
+        } catch {
+          return [];
+        }
+      };
+
+      const updateSummary = () => {
+        const spent =
+          budgetData.rent + budgetData.food + budgetData.transportation;
+        const remaining = budgetData.income - spent;
+
+        const budgetText =
+          remaining >= 0
+            ? `You're on track with $${remaining.toFixed(2)} remaining.`
+            : `You've exceeded your budget by $${Math.abs(remaining).toFixed(
+                2
+              )}.`;
+        document.getElementById("budgetSummary").innerText = budgetText;
+
+        const ctx = document.getElementById("budgetChart").getContext("2d");
+        new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: ["Spent", "Remaining"],
+            datasets: [
+              {
+                data: [spent, remaining],
+                backgroundColor: ["#f56942", "#28a745"],
+              },
+            ],
+          },
+          options: {
+            cutout: "70%",
+            plugins: { legend: { display: true, position: "bottom" } },
+          },
+        });
+
+        const goals = getStoredGoals();
+        goalSummary.innerHTML = "";
+        smartInsights.innerHTML = "";
+
+        if (goals.length === 0) {
+          goalSummary.innerHTML = "No goals found.";
+        } else {
+          goals.forEach((goal, i) => {
+            const percent =
+              goal.amount > 0
+                ? Math.min((goal.saved / goal.amount) * 100, 100)
+                : 0;
+            const p = document.createElement("p");
+            p.innerHTML = `<strong>Goal ${i + 1}</strong>: ${
+              goal.name
+            } – ${Math.round(percent)}% complete ($${goal.saved} of $${
+              goal.amount
+            })`;
+            goalSummary.appendChild(p);
+
+            const li = document.createElement("li");
+            li.textContent = `Save $${(goal.amount - goal.saved).toFixed(
+              2
+            )} more for "${goal.name}" by ${goal.date}.`;
+            smartInsights.appendChild(li);
+          });
+
+          const foodInsight = document.createElement("li");
+          foodInsight.textContent = `You're spending $${budgetData.food} on food. Consider adjusting it to save more.`;
+          smartInsights.appendChild(foodInsight);
+        }
+      };
+
+      let conversation = [];
+
+      const updateChatHistory = () => {
+        chatHistory.innerHTML = "";
+        conversation.forEach((msg) => {
+          const div = document.createElement("div");
+          div.classList.add("chat-message", msg.role);
+          div.innerHTML =
+            msg.role === "user"
+              ? `You: ${msg.text}`
+              : `<strong>MoneyMind:</strong><br>${marked.parse(msg.text)}`;
+          chatHistory.appendChild(div);
+        });
+      };
+
+      const generateText = async (prompt) => {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const loading = document.createElement("div");
+        loading.innerText = "Thinking...";
+        chatHistory.appendChild(loading);
+
+        try {
+          const goals = getStoredGoals();
+          const goalPrompt = goals
+            .map(
+              (g, i) =>
+                `Goal ${i + 1}: Save $${g.amount} for ${g.name} (saved $${
+                  g.saved
+                }, deadline: ${g.date})`
+            )
+            .join(" ");
+          const context = `Income: $${budgetData.income}, Rent: $${budgetData.rent}, Food: $${budgetData.food}, Transport: $${budgetData.transportation}. ${goalPrompt}`;
+          const result = await model.generateContent(`${context}\n\n${prompt}`);
+          const response = await result.response;
+          const text = response.text();
+
+          conversation.push({ role: "user", text: prompt });
+          conversation.push({ role: "model", text });
+          updateChatHistory();
+        } catch {
+          conversation.push({ role: "model", text: "Something went wrong." });
+          updateChatHistory();
+        } finally {
+          chatHistory.removeChild(loading);
+        }
+      };
+
+      generateBtn.addEventListener("click", () => {
+        const prompt = userInput.value;
+        if (prompt) {
+          generateText(prompt);
+          userInput.value = "";
+        }
+      });
+
+      userInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          const prompt = userInput.value;
+          if (prompt) {
+            generateText(prompt);
+            userInput.value = "";
+          }
+        }
+      });
+
+      window.addEventListener("load", updateSummary);
+    </script>
   </body>
 </html>

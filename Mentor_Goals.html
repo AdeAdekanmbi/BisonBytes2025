@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-	Spectral by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
   <head>
     <title>MoneyMind Smart Dashboard</title>
@@ -28,10 +23,25 @@
         width: 100%;
         box-sizing: border-box;
       }
+      .progress-container {
+        background: #e0e0e0;
+        border-radius: 25px;
+        margin: 2em 0;
+        overflow: hidden;
+        height: 25px;
+      }
+      .progress-bar {
+        background-color: #28a745;
+        height: 100%;
+        width: 0%;
+        color: white;
+        text-align: center;
+        line-height: 25px;
+        transition: width 0.4s ease;
+      }
     </style>
   </head>
   <body class="is-preload">
-    <!-- Page Wrapper -->
     <div id="page-wrapper">
       <!-- Header -->
       <header id="header">
@@ -80,60 +90,106 @@
               </li>
             </ul>
 
-            <!-- Goal Input Form -->
-            <header>
-              <h3 class="major">Set Your Financial Goals</h3>
-            </header>
-            <form method="post" action="#">
-              <div class="row gtr-uniform">
-                <div class="col-12">
-                  <input
-                    type="text"
-                    name="goalName"
-                    id="goalName"
-                    placeholder="Goal Name (e.g., Summer Travel)"
-                  />
-                </div>
-                <div class="col-12">
-                  <input
-                    type="text"
-                    name="goalAmount"
-                    id="goalAmount"
-                    placeholder="Target Amount ($)"
-                  />
-                </div>
-                <div class="col-12">
-                  <input
-                    type="text"
-                    name="savedSoFar"
-                    id="savedSoFar"
-                    placeholder="Saved So Far ($)"
-                  />
-                </div>
-                <div class="col-12">
-                  <input type="date" name="targetDate" id="targetDate" />
-                </div>
-                <div class="col-12">
-                  <textarea
-                    name="goalNotes"
-                    id="goalNotes"
-                    placeholder="Describe your motivation or strategy"
-                    rows="4"
-                  ></textarea>
-                </div>
-                <div class="col-12">
-                  <ul class="actions">
-                    <li>
-                      <input type="submit" value="Save Goal" class="primary" />
-                    </li>
-                    <li><input type="reset" value="Reset" /></li>
-                  </ul>
-                </div>
-              </div>
-            </form>
-          </div>
-        </section>
-      </article>
+            <!-- 👇 Keep your original header above this -->
+<!-- Goal Input Form -->
+<header><h3 class="major">Set Your Financial Goals</h3></header>
+<form id="goalForm">
+  <div class="row gtr-uniform">
+    <div class="col-12">
+      <input type="text" name="goalName" id="goalName" placeholder="Goal Name (e.g., Summer Travel)" />
+    </div>
+    <div class="col-12">
+      <input type="text" name="goalAmount" id="goalAmount" placeholder="Target Amount ($)" />
+    </div>
+    <div class="col-12">
+      <input type="text" name="savedSoFar" id="savedSoFar" placeholder="Saved So Far ($)" />
+    </div>
+    <div class="col-12">
+      <input type="date" name="targetDate" id="targetDate" />
+    </div>
+    <div class="col-12">
+      <textarea name="goalNotes" id="goalNotes" placeholder="Describe your motivation or strategy" rows="4"></textarea>
+    </div>
+    <div class="col-12">
+      <ul class="actions">
+        <li><input type="submit" value="Save Goal" class="primary" /></li>
+        <li><input type="reset" value="Reset" /></li>
+      </ul>
+    </div>
+  </div>
+</form>
+
+<!-- 👇 Where goals get rendered -->
+<div id="goalList"></div>
+
+<!-- 👇 Scripts -->
+<script>
+  const goalForm = document.getElementById("goalForm");
+  const goalList = document.getElementById("goalList");
+
+  function getGoals() {
+    return JSON.parse(localStorage.getItem("goals") || "[]");
+  }
+
+  function saveGoals(goals) {
+    localStorage.setItem("goals", JSON.stringify(goals));
+  }
+
+  function renderGoals() {
+    const goals = getGoals();
+    goalList.innerHTML = "";
+    goals.forEach((goal, index) => {
+      const percent = goal.goalAmount > 0
+        ? Math.min((goal.savedSoFar / goal.goalAmount) * 100, 100)
+        : 0;
+
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <hr />
+        <h4><strong>${goal.goalName}</strong></h4>
+        <p><strong>Target:</strong> $${goal.goalAmount} | <strong>Saved:</strong> $${goal.savedSoFar}</p>
+        <p><strong>Deadline:</strong> ${goal.targetDate}</p>
+        <p>${goal.goalNotes}</p>
+        <div class="progress-container">
+          <div class="progress-bar" style="width: ${percent}%;">${Math.round(percent)}%</div>
+        </div>
+        <button class="button small" data-index="${index}">Remove Goal</button>
+      `;
+      goalList.appendChild(div);
+    });
+
+    document.querySelectorAll("#goalList button").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const index = e.target.getAttribute("data-index");
+        const goals = getGoals();
+        goals.splice(index, 1);
+        saveGoals(goals);
+        renderGoals();
+      });
+    });
+  }
+
+  goalForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const newGoal = {
+      goalName: document.getElementById("goalName").value,
+      goalAmount: parseFloat(document.getElementById("goalAmount").value) || 0,
+      savedSoFar: parseFloat(document.getElementById("savedSoFar").value) || 0,
+      targetDate: document.getElementById("targetDate").value,
+      goalNotes: document.getElementById("goalNotes").value,
+    };
+
+    const goals = getGoals();
+    goals.push(newGoal);
+    saveGoals(goals);
+    renderGoals();
+    goalForm.reset();
+  });
+
+  window.addEventListener("load", renderGoals);
+</script>
+
 
       <!-- Footer -->
       <footer id="footer">
@@ -179,5 +235,45 @@
     <script src="assets/js/breakpoints.min.js"></script>
     <script src="assets/js/util.js"></script>
     <script src="assets/js/main.js"></script>
+
+    <!-- Goal Saving & Progress Script -->
+    <script>
+      const goalFields = [
+        "goalName",
+        "goalAmount",
+        "savedSoFar",
+        "targetDate",
+        "goalNotes",
+      ];
+      const inputMap = {};
+
+      goalFields.forEach((field) => {
+        inputMap[field] = document.getElementById(field);
+      });
+
+      function updateProgressBar() {
+        const saved = parseFloat(inputMap["savedSoFar"].value) || 0;
+        const target = parseFloat(inputMap["goalAmount"].value) || 0;
+        const percent = target > 0 ? Math.min((saved / target) * 100, 100) : 0;
+
+        const bar = document.getElementById("progressBar");
+        bar.style.width = percent + "%";
+        bar.textContent = Math.round(percent) + "%";
+      }
+
+      window.addEventListener("load", () => {
+        goalFields.forEach((field) => {
+          const input = inputMap[field];
+          if (input) {
+            input.value = localStorage.getItem(`goal-${field}`) || "";
+            input.addEventListener("input", () => {
+              localStorage.setItem(`goal-${field}`, input.value);
+              updateProgressBar();
+            });
+          }
+        });
+        updateProgressBar();
+      });
+    </script>
   </body>
 </html>
